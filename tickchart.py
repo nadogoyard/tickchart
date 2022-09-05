@@ -9,4 +9,6 @@ while True:
     if oldest_data_from_stream_buffer:
         price = np.array(oldest_data_from_stream_buffer.get('price'))
         quantity = np.array(oldest_data_from_stream_buffer.get('quantity'))
-        print(f"{price},{quantity}")
+        file_path = r'data.txt' 
+        with open(file_path, "a") as output_file:
+            output_file.write(f"{price} \n")
