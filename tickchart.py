@@ -11,7 +11,7 @@ pricedata = []
 timedata = []
 
 def update_graph():
-    ax.plot(timedata, pricedata, color='red')
+    ax.plot(timedata, pricedata, drawstyle='steps-pre', color='red')
 
     fig.canvas.draw()
     plt.pause(0.01)
