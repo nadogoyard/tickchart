@@ -3,11 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import asyncio
 
-
 fig = plt.figure()
+fig.set_figheight(6)
+fig.set_figwidth(12)
 ax = fig.add_subplot(211)
 ax2 = fig.add_subplot(212)
-fig.show()
+ax.set_title('ETHUSDT ticks')
+plt.ion()
+plt.show()
 
 best_bid = []
 best_ask = []
@@ -16,10 +19,11 @@ def update_graph():
 
     ax.plot(best_bid, drawstyle='steps-pre', color='green')
     ax.plot(best_ask, drawstyle='steps-pre', color='red')
-    ax2.plot(np.subtract(best_ask, best_bid))
+    ax2.plot((np.subtract(best_ask, best_bid)), drawstyle='steps-pre')
 
     fig.canvas.draw()
-    plt.pause(0.001)
+    plt.pause(0.01)
+    fig.canvas.blit(fig.bbox)
 
 async def main():
     ubwa = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange="binance.com")
