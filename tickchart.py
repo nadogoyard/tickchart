@@ -4,38 +4,39 @@ import matplotlib.pyplot as plt
 import asyncio
 
 fig = plt.figure()
-ax = fig.add_subplot(111)
+ax = fig.add_subplot(211)
+ax2 = fig.add_subplot(212)
 fig.show()
 
-pricedata = []
-timedata = []
+best_bid = []
+best_ask = []
 
 def update_graph():
-    ax.plot(timedata, pricedata, drawstyle='steps-pre', color='red')
+    ax.plot(best_bid, drawstyle='steps-pre', color='green')
+    ax.plot(best_ask, drawstyle='steps-pre', color='red')
+    ax2.plot(np.subtract(best_ask, best_bid))
 
     fig.canvas.draw()
-    plt.pause(0.01)
+    plt.pause(0.001)
 
 async def main():
     ubwa = unicorn_binance_websocket_api.BinanceWebSocketApiManager(exchange="binance.com")
-    ubwa.create_stream(['trade'], ['ethusdt'], output="UnicornFy")
+    ubwa.create_stream(['bookTicker'], ['ethusdt'], output="UnicornFy")
     while True:
-        oldest_data_from_stream_buffer = ubwa.pop_stream_data_from_stream_buffer()
+        oldest_data_from_stream_buffer = ubwa.pop_stream_data_from_stream_buffer(mode='LIFO')
         if oldest_data_from_stream_buffer:
-            price = np.array(oldest_data_from_stream_buffer.get('price'))
-            trade_time = np.array(oldest_data_from_stream_buffer.get('trade_time'))
+            best_bid_price = np.array(oldest_data_from_stream_buffer.get('best_bid_price'))
+            best_ask_price = np.array(oldest_data_from_stream_buffer.get('best_ask_price'))
 
-            if price == None:
+            if best_bid_price == None:
                 pass
             else:
-                pricedata.append(price)
+                best_bid.append(round(float(best_bid_price), 3))
 
-            if trade_time == None:
+            if best_ask_price == None:
                 pass
             else:
-                timedata.append(trade_time)
-
-            print(price, trade_time)
+                best_ask.append(round(float(best_ask_price), 3))
 
             update_graph()
 
