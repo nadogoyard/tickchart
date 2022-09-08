@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import asyncio
 
+
 fig = plt.figure()
 ax = fig.add_subplot(211)
 ax2 = fig.add_subplot(212)
@@ -12,6 +13,7 @@ best_bid = []
 best_ask = []
 
 def update_graph():
+
     ax.plot(best_bid, drawstyle='steps-pre', color='green')
     ax.plot(best_ask, drawstyle='steps-pre', color='red')
     ax2.plot(np.subtract(best_ask, best_bid))
@@ -32,7 +34,7 @@ async def main():
                 pass
             else:
                 best_bid.append(round(float(best_bid_price), 3))
-
+            
             if best_ask_price == None:
                 pass
             else:
